@@ -315,6 +315,8 @@ package org.efflex.viewStackEffects.effectClasses
 			_contentPane.state = READY_FOR_HIDE;
 			_contentPane.selectedIndexFrom = _viewStack.getChildIndex( DisplayObject( target ) );
 			
+//			_contentPane.visible = false;
+			
 			_display = new Sprite();
 			_contentPane.display = _display;
 			
@@ -362,6 +364,8 @@ package org.efflex.viewStackEffects.effectClasses
 		{
 			super.finishEffect();
 
+			if( hideTarget ) applyEraseBlendMode( false );
+			
 			switch( state )
 			{
 				case HIDING :
@@ -398,8 +402,6 @@ package org.efflex.viewStackEffects.effectClasses
 					break;
 				}
 			}
-			
-			if( hideTarget ) applyEraseBlendMode( false );
 		}
 		
 		protected function removeChildren():void
@@ -431,7 +433,6 @@ package org.efflex.viewStackEffects.effectClasses
 		
 		private function applyEraseBlendMode( value:Boolean ):void
 		{
-			
 			if( value )
 			{
 				_prevBlendMode = target.blendMode;
