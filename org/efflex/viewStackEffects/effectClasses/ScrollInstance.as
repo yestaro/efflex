@@ -38,6 +38,8 @@ package org.efflex.viewStackEffects.effectClasses
 		public function ScrollInstance( target:UIComponent )
 		{
 			super( target );
+			
+			trace( "ScrollInstance" );
 		}
 		
 		override public function play():void
@@ -113,6 +115,7 @@ package org.efflex.viewStackEffects.effectClasses
 					
 					createScroll();
 					targetDuration = ( scaleDurationByChange ) ? duration * Math.abs( selectedIndexFrom - selectedIndexTo ) : duration;
+					if( targetDuration == 0 ) targetDuration = duration;
 					tween = createTween( this, new Array( display.x, display.y ), new Array( toX, toY ), targetDuration );
 					break;
 				}
