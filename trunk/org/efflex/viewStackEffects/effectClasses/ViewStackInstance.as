@@ -162,7 +162,6 @@ package org.efflex.viewStackEffects.effectClasses
         
 		override public function initEffect( event:Event ):void
 	    {
-	    	trace( "initEffect" );
 	    	_contentPane = _viewStack.rawChildren.getChildByName( "ViewStackInstance" ) as MovieClip;
 			if( !_contentPane ) createContainers();
 			
@@ -213,7 +212,6 @@ package org.efflex.viewStackEffects.effectClasses
         {
 			super.play();
 
-			trace( "play" );
 			if( hideTarget ) applyEraseBlendMode( true );
         }
 
@@ -317,8 +315,6 @@ package org.efflex.viewStackEffects.effectClasses
 			_contentPane.state = READY_FOR_HIDE;
 			_contentPane.selectedIndexFrom = _viewStack.getChildIndex( DisplayObject( target ) );
 			
-//			_contentPane.visible = false;
-			
 			_display = new Sprite();
 			_contentPane.display = _display;
 			
@@ -403,7 +399,6 @@ package org.efflex.viewStackEffects.effectClasses
 				}
 			}
 			
-			trace( "finishEffect" );
 			if( hideTarget ) applyEraseBlendMode( false );
 		}
 		
@@ -439,13 +434,11 @@ package org.efflex.viewStackEffects.effectClasses
 			
 			if( value )
 			{
-				trace( "applyEraseBlendMode", value, "*************", state );
 				_prevBlendMode = target.blendMode;
 				target.blendMode = BlendMode.ERASE;
 			}
 			else
 			{
-				trace( "applyEraseBlendMode", value, state );
 				target.blendMode = ( _prevBlendMode ) ? _prevBlendMode : BlendMode.NORMAL;
 			}
 		}
