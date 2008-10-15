@@ -113,7 +113,7 @@ package org.efflex.viewStackEffects.effectClasses
 					var totalPercent:Number = Number( value );
 					var transitionPercent:Number;
 					var extraSize:Number;
-		
+					
 					if( totalPercent < 0.5 )
 					{
 						transitionPercent = totalPercent * 2;
@@ -132,20 +132,19 @@ package org.efflex.viewStackEffects.effectClasses
 					{
 						if( totalPercent < 0.5 )
 						{
-							extraSize = ( ( contentHeight * _startScale )  * numColumns ) - contentHeight;
-							display.height = contentHeight + ( extraSize * Math.abs( transitionPercent - 1 ) );;
+							extraSize = ( ( contentHeight * _startScale )  * numRows ) - contentHeight;
+							display.height = contentHeight + ( extraSize * Math.abs( transitionPercent - 1 ) );
 							display.scaleX = display.scaleY;
 						}
 						else
 						{
-							extraSize = contentHeight * ( numColumns - 1 );
+							extraSize = contentHeight * ( numRows - 1 );
 							display.height = ( contentHeight + ( extraSize * transitionPercent ) );
 							display.scaleX = display.scaleY;
 						}
 					}
 					else
 					{
-						
 						if( totalPercent < 0.5 )
 						{
 							extraSize = ( ( contentWidth * _startScale ) * numColumns ) - contentWidth;
