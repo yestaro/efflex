@@ -59,26 +59,40 @@ package org.efflex.effectClasses
 			    if( frameLabel.name == frameTo.toString() ) _frameNumberTo = frameLabel.frame;
 			}
 			
-			if( _frameNumberFrom == -1 && frameFrom is int )
+			if( frameFrom )
 			{
-				if( frameFrom < 1 ) throw new Error( "Frame number must be bigger than 0" );
-				if( frameFrom > _movieClip.totalFrames ) throw new Error( "Frame number must be less than totalFrames" );
-				_frameNumberFrom = int( frameFrom );
+				if( _frameNumberFrom == -1 && frameFrom is int )
+				{
+					if( frameFrom < 1 ) throw new Error( "Frame number must be bigger than 0" );
+					if( frameFrom > _movieClip.totalFrames ) throw new Error( "Frame number must be less than totalFrames" );
+					_frameNumberFrom = int( frameFrom );
+				}
+				else
+				{
+					throw new Error( "Frame label '" + frameFrom + "' could not be found" );
+				}
 			}
 			else
 			{
-				throw new Error( "Frame label '" + frameFrom + "' could not be found" );
+				_frameNumberFrom = 0;
 			}
 			
-			if( _frameNumberTo == -1&& frameTo is int )
+			if( frameTo )
 			{
-				if( frameTo < 1 ) throw new Error( "Frame number must be bigger than 0" );
-				if( frameTo > _movieClip.totalFrames ) throw new Error( "Frame number must be less than totalFrames" );
-				_frameNumberTo = int( frameTo );
+				if( _frameNumberTo == -1&& frameTo is int )
+				{
+					if( frameTo < 1 ) throw new Error( "Frame number must be bigger than 0" );
+					if( frameTo > _movieClip.totalFrames ) throw new Error( "Frame number must be less than totalFrames" );
+					_frameNumberTo = int( frameTo );
+				}
+				else
+				{
+					throw new Error( "Frame label '" + frameFrom + "' could not be found" );
+				}
 			}
 			else
 			{
-				throw new Error( "Frame label '" + frameFrom + "' could not be found" );
+				_frameNumberTo = _movieClip.totalFrames;
 			}
 			
 			_movieClip.gotoAndStop( _frameNumberFrom );
