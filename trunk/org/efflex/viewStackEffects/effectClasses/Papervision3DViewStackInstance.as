@@ -38,7 +38,7 @@ package org.efflex.viewStackEffects.effectClasses
 		public var constrain				: Boolean;
 		
 		private var _scene					: Scene3D;
-		private var _viewport				: Viewport3D;
+		protected var _viewport				: Viewport3D;
 		private var _renderer				: BasicRenderEngine;
 		private var _camera					: Camera3D;
 		private var _bitmapMaterials		: Array;
@@ -65,6 +65,11 @@ package org.efflex.viewStackEffects.effectClasses
 			
 			_viewport.x = -( ( w - contentWidth ) / 2 );
 			_viewport.y = -( ( h - contentHeight ) / 2 );
+		}
+		
+		final public function get bitmapMaterials():Array
+		{
+			return data.bitmapMaterials as Array;
 		}
 		
 		public function getBitmapMaterialAt( index:uint ):BitmapMaterial
