@@ -38,8 +38,6 @@ package org.efflex.viewStackEffects.effectClasses
 		public function ScrollInstance( target:UIComponent )
 		{
 			super( target );
-			
-			trace( "ScrollInstance" );
 		}
 		
 		override public function play():void
