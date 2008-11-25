@@ -34,6 +34,13 @@ package org.efflex
 		[Inspectable(category="General", enumeration="left,right,up,down", defaultValue="left")]
 		public var direction 					: String = FlipPapervision3D.LEFT;
 		
+		[Inspectable(category="General", type="Number", defaultValue="2")]
+		public var numSegmentsWidth				: uint = 2;
+		
+		[Inspectable(category="General", type="Number", defaultValue="2")]
+		public var numSegmentsHeight			: uint = 2;
+		
+		
 		public function FlipPapervision3D(target:UIComponent=null)
 		{
 			super( target );
@@ -47,6 +54,8 @@ package org.efflex
 	
 			var effectInstance:FlipPapervision3DInstance = FlipPapervision3DInstance( instance );
 			effectInstance.direction = direction;
+			effectInstance.numSegmentsWidth = numSegmentsWidth;
+			effectInstance.numSegmentsHeight = numSegmentsHeight;
 		}
 	}
 }

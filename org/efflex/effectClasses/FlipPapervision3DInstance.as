@@ -21,18 +21,20 @@ package org.efflex.effectClasses
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	
+	import org.efflex.FlipPapervision3D;
 	import org.papervision3d.objects.primitives.Plane;
 	
-	import org.efflex.FlipPapervision3D;
 	import ws.tink.utils.MathUtil;
 
 	public class FlipPapervision3DInstance extends Papervision3DInstance
 	{
 		
-		public var direction		:String;
+		public var direction			:String;
+		public var numSegmentsWidth		: uint;
+		public var numSegmentsHeight	: uint;
 		
-		private var _plane			: Plane;
-		private var _startRotation	: Number;
+		private var _plane				: Plane;
+		private var _startRotation		: Number;
 		
 		public function FlipPapervision3DInstance(target:UIComponent)
 		{
@@ -44,7 +46,7 @@ package org.efflex.effectClasses
 			var w:Number = bitmapMaterial.bitmap.width;
 			var h:Number = bitmapMaterial.bitmap.height;
 			
-			_plane = new Plane( bitmapMaterial, w, h, 2, 2 );
+			_plane = new Plane( bitmapMaterial, w, h, numSegmentsWidth, numSegmentsHeight );
 			addChild3D( _plane );
 			
 			_startRotation = 0;

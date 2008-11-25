@@ -30,7 +30,8 @@ package org.efflex.viewStackEffects.effectClasses
 		
 		public var scaleDurationByChange	: Boolean = true;
 		public var direction				: String;
-		
+		public var numSegmentsWidth			: uint;
+		public var numSegmentsHeight		: uint;
 		
 		private var _plane					: Plane;
 		private var _showingSelectedIndexTo	: Boolean;
@@ -130,7 +131,7 @@ package org.efflex.viewStackEffects.effectClasses
 				}
 				case HIDING :
 				{
-					_plane = new Plane( getBitmapMaterialAt( selectedIndexFrom ), contentWidth, contentHeight, 2, 2 );
+					_plane = new Plane( getBitmapMaterialAt( selectedIndexFrom ), contentWidth, contentHeight, numSegmentsWidth, numSegmentsHeight );
 					_plane.name = "plane";
 					scene.addChild( _plane );
 					

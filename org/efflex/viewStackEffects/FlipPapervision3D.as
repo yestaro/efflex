@@ -39,6 +39,12 @@ package org.efflex.viewStackEffects
 		
 		[Inspectable(category="General", type="Boolean", enumeration="true,false", defaultValue="true")]
 		public var scaleDurationByChange		: Boolean = true;
+		
+		[Inspectable(category="General", type="Number", defaultValue="2")]
+		public var numSegmentsWidth				: uint = 2;
+		
+		[Inspectable(category="General", type="Number", defaultValue="2")]
+		public var numSegmentsHeight			: uint = 2;
 
 
 		public function FlipPapervision3D(target:UIComponent=null)
@@ -55,6 +61,8 @@ package org.efflex.viewStackEffects
 			var effectInstance:FlipPapervision3DInstance = FlipPapervision3DInstance( instance );
 			effectInstance.direction = direction;
 			effectInstance.scaleDurationByChange = scaleDurationByChange;
+			effectInstance.numSegmentsWidth = numSegmentsWidth;
+			effectInstance.numSegmentsHeight = numSegmentsHeight;
 		}
 	}
 }
