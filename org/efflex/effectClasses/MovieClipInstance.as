@@ -16,18 +16,12 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 SOFTWARE.
 */
 
-package org.efflex.effectClasses
+package org.efflex.mx.effectClasses
 {
-	import flash.display.BlendMode;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.FrameLabel;
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	
-	import mx.core.Application;
-	import mx.core.Container;
 	import mx.core.UIComponent;
 	
+	import org.efflex.mx.core.MovieClipCore;
+
 	public class MovieClipInstance extends ContainerInstance
 	{
 		
@@ -35,10 +29,7 @@ package org.efflex.effectClasses
 		public var frameFrom					: Object;
 		public var frameTo						: Object;
 		
-		private var _movieClip					: MovieClip;
-		
-		public var _frameNumberFrom				: int = -1;
-		public var _frameNumberTo				: int = -1;
+		private var _movieClipCore				: MovieClipCore;
 		
 		public function MovieClipInstance( target:UIComponent )
 		{
@@ -47,60 +38,10 @@ package org.efflex.effectClasses
 
 		override public function play():void
         {
-			_movieClip = MovieClip( new source() );
-		
-			var frameLabel:FrameLabel;
-			var frameLabels:Array = _movieClip.currentLabels;
-			var numFrameLabels:uint = frameLabels.length;
-			for( var i:uint = 0; i < numFrameLabels; i++)
-			{
-			    frameLabel = FrameLabel( frameLabels[ i ] );
-			    if( frameLabel.name == frameFrom.toString() ) _frameNumberFrom = frameLabel.frame;
-			    if( frameLabel.name == frameTo.toString() ) _frameNumberTo = frameLabel.frame;
-			}
+			_movieClipCore = new MovieClipCore( source, frameFrom, frameTo, duration );
+			display.addChild( _movieClipCore.movieClip );
 			
-			if( frameFrom )
-			{
-				if( _frameNumberFrom == -1 && frameFrom is int )
-				{
-					if( frameFrom < 1 ) throw new Error( "Frame number must be bigger than 0" );
-					if( frameFrom > _movieClip.totalFrames ) throw new Error( "Frame number must be less than totalFrames" );
-					_frameNumberFrom = int( frameFrom );
-				}
-				else
-				{
-					throw new Error( "Frame label '" + frameFrom + "' could not be found" );
-				}
-			}
-			else
-			{
-				_frameNumberFrom = 0;
-			}
-			
-			if( frameTo )
-			{
-				if( _frameNumberTo == -1&& frameTo is int )
-				{
-					if( frameTo < 1 ) throw new Error( "Frame number must be bigger than 0" );
-					if( frameTo > _movieClip.totalFrames ) throw new Error( "Frame number must be less than totalFrames" );
-					_frameNumberTo = int( frameTo );
-				}
-				else
-				{
-					throw new Error( "Frame label '" + frameFrom + "' could not be found" );
-				}
-			}
-			else
-			{
-				_frameNumberTo = _movieClip.totalFrames;
-			}
-			
-			_movieClip.gotoAndStop( _frameNumberFrom );
-			display.addChild( _movieClip );
-			
-			if( isNaN( duration ) ) duration = ( Math.abs( _frameNumberTo - _frameNumberFrom ) / Application.application.stage.frameRate ) * 1000;
-			
-			tween = createTween( this, 0, 1, duration );
+			tween = createTween( this, 0, 1, _movieClipCore.duration );
 			
 			super.play();
         }
@@ -109,14 +50,13 @@ package org.efflex.effectClasses
 		{
 			super.onTweenUpdate( value );
 			
-			var diff:int = _frameNumberTo - _frameNumberFrom;
-			_movieClip.gotoAndStop( Math.round( _frameNumberFrom + ( diff * Number( value ) ) ) );
+			_movieClipCore.update( Number( value ) );
 		}
 		
 		override public function finishEffect():void
 	    {
-			display.removeChild( _movieClip );
-	    	_movieClip = null;
+			display.removeChild( _movieClipCore.movieClip );
+	    	_movieClipCore = null;
 	    	
 	    	super.finishEffect();
 	    }
