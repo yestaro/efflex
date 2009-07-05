@@ -17,7 +17,7 @@ SOFTWARE.
 */
 
 
-package org.efflex.effectClasses
+package org.efflex.mx.effectClasses
 {
 
 	import flash.display.BlendMode;
@@ -26,6 +26,7 @@ package org.efflex.effectClasses
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.geom.Point;
+	import flash.utils.getTimer;
 	
 	import mx.core.Container;
 	import mx.core.UIComponent;
@@ -33,8 +34,8 @@ package org.efflex.effectClasses
 	import mx.effects.effectClasses.TweenEffectInstance;
 	import mx.managers.PopUpManager;
 	
-	import org.efflex.ContainerEffect;
-	
+	import org.efflex.mx.ContainerEffect;
+
 	use namespace mx_internal;
 	
 	public class ContainerInstance extends TweenEffectInstance
@@ -51,13 +52,12 @@ package org.efflex.effectClasses
 		public var width 							: Number;
 		public var height						 	: Number;
 		public var hideTarget					 	: Boolean;
-		public var hideType						: String;
+		public var hideType							: String;
 		
 		private var _prevBlendModes					: Array;
 		
 		private var _contentPane					: DisplayObjectContainer;
 
-		
 		public function ContainerInstance( target:UIComponent )
 		{
 			super( target );
@@ -84,6 +84,11 @@ package org.efflex.effectClasses
 			if( hideTarget ) applyBlendMode( true );
 		}
 
+		override public function end():void
+		{
+			super.end()
+		}
+		
 		override public function finishEffect():void
 		{
 			super.finishEffect();
@@ -156,7 +161,7 @@ package org.efflex.effectClasses
 			var child:DisplayObject;
 			var numChildren:uint
 			var i:uint;
-			
+//
 			if( !_prevBlendModes ) _prevBlendModes = new Array();
 			
 			if( value )
@@ -225,7 +230,6 @@ package org.efflex.effectClasses
 						 		child.blendMode = ( bm ) ? bm : BlendMode.NORMAL;
 							}
 						}
-						break;
 						// No Break require here as we still need to target the children
 					}
 					case ContainerEffect.CHILDREN_NO_RAW:

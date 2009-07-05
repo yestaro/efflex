@@ -16,11 +16,9 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 SOFTWARE.
 */
 
-package org.efflex.effectClasses
+package org.efflex.mx.effectClasses
 {
-	import flash.display.Bitmap;
 	import flash.display.BitmapData;
-	import flash.display.Sprite;
 	import flash.events.Event;
 	
 	import mx.core.UIComponent;
@@ -28,45 +26,62 @@ package org.efflex.effectClasses
 	public class BitmapInstance extends ContainerInstance
 	{
 		
-		public var transparent					: Boolean;
+		public var _transparent					: Boolean;
 
-		private var _bitmapDatum				: Array;
+		private var _bitmapData					: BitmapData;
 		
 		public function BitmapInstance( target:UIComponent )
 		{
 			super( target );
 		}
 
-		protected function get bitmapDatum():Array
+		public function get transparent():Boolean
 		{
-			return _bitmapDatum;
+			return _transparent;
+		}
+		public function set transparent( value:Boolean ):void
+		{
+			_transparent = value;
+		}
+		
+		protected function get bitmapData():BitmapData
+		{
+			return _bitmapData;
 		}
 		
 		override public function initEffect( event:Event ):void
 		{
-			_bitmapDatum = new Array();
+//			_bitmapDatum = new Array();
 			
 			UIComponent( target ).validateNow();
 			
-	    	createBitmapDatum();
+	    	createBitmapData();
 	    	
 			super.initEffect( event );
 		}
 		
-		protected function createBitmapDatum():void
+		protected function createBitmapData():void
 		{
-			// Overriden in subclasses.
+			var backgroundColor:Number = target.getStyle( "backgroundColor" );
+			if( isNaN( backgroundColor ) ) backgroundColor = 0xFFFFFF;
+			
+			var bitmapColor:int = ( transparent ) ? 0x00000000 : backgroundColor;
+			
+			var t:UIComponent = UIComponent( target );
+			_bitmapData = new BitmapData( t.width, t.height, transparent, 0xFF0000 );
+			_bitmapData.draw( t );
 		}
 		
-		protected function destroyBitmapDatum():void
+		protected function destroyBitmapData():void
 		{
-			var bitmapData:BitmapData;
-			var numBitmapDatum:int = bitmapDatum.length;
-			for( var i:int = 0; i < numBitmapDatum; i++ )
-			{
-				bitmapData = BitmapData( bitmapDatum.splice( 0, 1 )[ 0 ] );
-				if( bitmapData ) bitmapData.dispose();
-			}
+			_bitmapData.dispose();
+//			var bitmapData:BitmapData;
+//			var numBitmapDatum:int = bitmapDatum.length;
+//			for( var i:int = 0; i < numBitmapDatum; i++ )
+//			{
+//				bitmapData = BitmapData( bitmapDatum.splice( 0, 1 )[ 0 ] );
+//				if( bitmapData ) bitmapData.dispose();
+//			}
 		}
 		
 		
@@ -74,7 +89,7 @@ package org.efflex.effectClasses
 		{
 			super.onTweenEnd( value );
 
-			destroyBitmapDatum();
+			destroyBitmapData();
 		}
 	}
 }
