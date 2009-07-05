@@ -16,7 +16,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 SOFTWARE.
 */
 
-package org.efflex.effectClasses
+package org.efflex.mx.effectClasses
 {
 	import flash.display.BitmapData;
 	import flash.display.BlendMode;
@@ -102,16 +102,18 @@ package org.efflex.effectClasses
 			display.addChild( _viewport );
 		}
 		
-		override protected function createBitmapDatum():void
+		override protected function createBitmapData():void
 		{
-			var backgroundColor:Number = target.getStyle( "backgroundColor" );
-			if( isNaN( backgroundColor ) ) backgroundColor = 0xFFFFFF;
+//			var backgroundColor:Number = target.getStyle( "backgroundColor" );
+//			if( isNaN( backgroundColor ) ) backgroundColor = 0xFFFFFF;
+//			
+//			var bitmapColor:int = ( transparent ) ? 0x00000000 : backgroundColor;
+//			
+//			var t:UIComponent = UIComponent( target );
+//			var bitmapData:BitmapData = new BitmapData( t.width, t.height, transparent, 0xFF0000 );
+//			bitmapData.draw( t );
 			
-			var bitmapColor:int = ( transparent ) ? 0x00000000 : backgroundColor;
-			
-			var t:UIComponent = UIComponent( target );
-			var bitmapData:BitmapData = new BitmapData( t.width, t.height, transparent, 0xFF0000 );
-			bitmapData.draw( t );
+			super.createBitmapData();
 			
 			_bitmapMaterial = new BitmapMaterial( bitmapData );
 			_bitmapMaterial.doubleSided = true;
@@ -140,9 +142,11 @@ package org.efflex.effectClasses
 	    	super.finishEffect();
 	    }
 	    
-	    override protected function destroyBitmapDatum():void
+	    override protected function destroyBitmapData():void
 		{
 			if( _bitmapMaterial ) _bitmapMaterial.destroy();
+			
+			super.destroyBitmapData();
 		}
 	}
 }
