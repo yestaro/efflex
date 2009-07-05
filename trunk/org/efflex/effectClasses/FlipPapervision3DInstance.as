@@ -16,12 +16,12 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 SOFTWARE.
 */
 
-package org.efflex.effectClasses
+package org.efflex.mx.effectClasses
 {
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	
-	import org.efflex.FlipPapervision3D;
+	import org.efflex.mx.FlipPapervision3D;
 	import org.papervision3d.objects.primitives.Plane;
 	
 	import ws.tink.utils.MathUtil;
