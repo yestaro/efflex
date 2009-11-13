@@ -1,7 +1,10 @@
 package org.efflex.mx.pairViewStackEffects.effectClasses
 {
+	import flash.display.Bitmap;
+	
 	import mx.core.UIComponent;
 	
+	import org.efflex.mx.pairViewStackEffects.PairViewStackTweenEffect;
 	import org.efflex.mx.viewStackEffects.effectClasses.ViewStackTweenEffectInstance;
 	import org.efflex.utils.TweenUtil;
 
@@ -23,6 +26,9 @@ package org.efflex.mx.pairViewStackEffects.effectClasses
 		private var _showStartTime						: Number;
 		private var _showEndTime						: Number;
 		
+		protected var _hidding							: Bitmap;
+		protected var _showing							: Bitmap;
+		
 		public function PairViewStackTweenEffectInstance( target:UIComponent )
 		{
 			super( target );
@@ -40,6 +46,23 @@ package org.efflex.mx.pairViewStackEffects.effectClasses
         	
         	playPairViewStackEffect();
         	
+			switch( bringToFront )
+			{
+				case PairViewStackTweenEffect.NEXT_CHILD :
+				{
+					display.addChild( _hidding );
+					display.addChild( _showing );
+					break;
+				}
+				case PairViewStackTweenEffect.PREV_CHILD :
+				{
+					display.addChild( _showing );
+					display.addChild( _hidding );
+					break;
+				}
+			}
+			
+			onTweenUpdate( 0 );
         	tween = createTween( this, 0, 1, duration );
         }
         
