@@ -99,7 +99,6 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			{
 				EffectTarget( _effectTargets[ i ] ).update( num );
 			}
-			
 		}
 		
 	}
