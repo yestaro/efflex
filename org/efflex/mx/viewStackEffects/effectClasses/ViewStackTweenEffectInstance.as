@@ -30,7 +30,6 @@ package org.efflex.mx.viewStackEffects.effectClasses
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
-	import flash.utils.getTimer;
 	
 	import mx.containers.ViewStack;
 	import mx.core.Container;
@@ -55,6 +54,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 		public var modalTransparencyColor 			: Number;
 		public var modalTransparencyBlur 			: Number;
 		public var modalTransparencyDuration 		: Number;
+		public var updateBitmaps					: Boolean;
 		
 		private var _prevBlendMode					: String;
 		
@@ -118,7 +118,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			return _contentPane.selectedIndexFrom;
 		}
 		
-		final protected function get wasInterrupted():Boolean
+		final public function get wasInterrupted():Boolean
 		{
 			return _contentPane.wasInterrupted;
 		}
@@ -128,22 +128,22 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			return _viewStack;
 		}
 		
-		final protected function get contentX():Number
+		final public function get contentX():Number
 		{
 			return _helper.contentX;
 		}
 		
-		final protected function get contentY():Number
+		final public function get contentY():Number
 		{
 			return _helper.contentY;
 		}
 		
-		final protected function get contentWidth():Number
+		final public function get contentWidth():Number
 		{
 			return _helper.contentWidth;
 		}
 		
-		final protected function get contentHeight():Number
+		final public function get contentHeight():Number
 		{
 			return _helper.contentHeight;
 		}
@@ -174,6 +174,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 	    	_contentPane = _viewStack.rawChildren.getChildByName( "ViewStackInstance" ) as ViewStackInstanceContainer;
 	    	
 			if( !_contentPane ) createContainers();
+			if( updateBitmaps ) _contentPane.addEventListener( Event.ENTER_FRAME, onContentPaneEnterFrame, false, 0, true );
 			
 			_indicesRequired = new Array();
 
@@ -299,14 +300,35 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			
 			var bitmapColor:int = ( transparent ) ? 0x00000000 : backgroundColor;
 			
-			var snapShot:BitmapData = new BitmapData( contentWidth, contentHeight, transparent, bitmapColor );
+			var snapShot:BitmapData;
 			
 			if( wasInterrupted )
 			{
-				snapShot.draw( _contentPane );
+				var matrix:Matrix;
+				if( _viewStack.clipContent )
+				{
+					_contentPane.hideDisplay.x = 0;
+					_contentPane.hideDisplay.y = 0;
+					matrix = new Matrix();
+					snapShot = new BitmapData( contentWidth, contentHeight, transparent, bitmapColor );
+				}
+				else
+				{
+					var bounds:Rectangle = _contentPane.display.getBounds( _contentPane.display );
+					_contentPane.hideDisplay.x = bounds.x;
+					_contentPane.hideDisplay.y = bounds.y;
+					matrix = new Matrix();
+					matrix.translate( -bounds.x, -bounds.y );
+					snapShot = new BitmapData( bounds.width, bounds.height, transparent, bitmapColor );
+				}
+				
+				snapShot.draw( ( popUp ) ? _contentPane.popUp : _contentPane, matrix );
 			}
 			else
 			{
+				_contentPane.hideDisplay.x = 0;
+				_contentPane.hideDisplay.y = 0;
+				snapShot = new BitmapData( contentWidth, contentHeight, transparent, bitmapColor );
 				snapShot.draw( viewStack, new Matrix( 1, 0, 0, 1, -( contentX + viewStack.borderMetrics.left ), -( contentY + viewStack.borderMetrics.top ) ) );
 			}
 			
@@ -358,16 +380,46 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			
 			if( _viewStack.clipContent )
 			{
-				var contentMask:Sprite = new Sprite();
-				contentMask.graphics.beginFill( 0x666666, 1 );
-				contentMask.graphics.drawRect( 0, 0, contentWidth, contentHeight );
-			
-				var maskTarget:DisplayObjectContainer = ( popUp ) ? _contentPane.popUp : _contentPane;
-				maskTarget.mask = contentMask;
-				maskTarget.addChild( contentMask );
+//				var contentMask:Sprite = new Sprite();
+//				contentMask.graphics.beginFill( 0x666666, 1 );
+//				contentMask.graphics.drawRect( 0, 0, contentWidth, contentHeight );
+//			
+//				var maskTarget:DisplayObjectContainer = ( popUp ) ? _contentPane.popUp : _contentPane;
+//				maskTarget.mask = contentMask;
+//				maskTarget.addChild( contentMask );
 			}
 			
 			_viewStack.rawChildren.addChild( _contentPane );
+		}
+		
+		private function onContentPaneEnterFrame( event:Event ):void
+		{
+			redrawBitmaps();
+		}
+		
+		protected function redrawBitmaps():void
+		{
+			if( _indicesRequired )
+			{
+				var bitmapData:BitmapData;
+				
+				var backgroundColor:Number = viewStack.getStyle( "backgroundColor" );
+				if( isNaN( backgroundColor ) ) backgroundColor = 0xFFFFFF;
+				
+				var bitmapColor:int = ( transparent ) ? 0x00000000 : backgroundColor;
+				
+				var child:UIComponent;
+				var numChildren:uint = _indicesRequired.length;
+				for( var i:uint; i < numChildren; i++ )
+				{
+					bitmapData = bitmapDatum[ _indicesRequired[ i ] ] as BitmapData;
+					if( bitmapData )
+					{
+						bitmapData.fillRect( bitmapData.rect, bitmapColor );				
+						bitmapData.draw( viewStack.getChildAt( _indicesRequired[ i ] ) );
+					}
+				}
+			}
 		}
 		
 		override public function end():void
@@ -400,6 +452,8 @@ package org.efflex.mx.viewStackEffects.effectClasses
 
 			if( _prevBlendMode ) applyEraseBlendMode( false );
 			
+			if( _contentPane && updateBitmaps ) _contentPane.removeEventListener( Event.ENTER_FRAME, onContentPaneEnterFrame, false );
+				
 			if( _wasInterrupted ) return;
 			
 			if( _effectType == FlexEvent.SHOW )

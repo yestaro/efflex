@@ -10,7 +10,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 	import org.efflex.mx.maskEffects.actions.IMaskAction;
 	import org.efflex.utils.TileUtil;
 
-	public class TileMaskInstance extends MaskInstance
+	public class TileMaskInstance extends MaskEffectInstance
 	{
 		
 		public var numRows						: uint;
@@ -54,7 +54,6 @@ package org.efflex.mx.viewStackEffects.effectClasses
         	_tileCore = new TileCore( numRows, numColumns, order, tileDurationPercent, duration );
         	
         	_masks = TileUtil.createShapeTiles( shapeFactory, numRows, numColumns, horizontalSpacing, verticalSpacing );
-        	
         	var maskContainer:Sprite = new Sprite();
         	for( var r:int = 0; r < numRows; r++ )
 			{

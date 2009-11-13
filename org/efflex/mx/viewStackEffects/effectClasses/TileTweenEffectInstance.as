@@ -122,6 +122,19 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			_tileCore = new TileCore( numRows, numColumns, order, tileDurationPercent, duration );
 		}
         
+		override protected function redrawBitmaps():void
+		{
+			super.redrawBitmaps();
+			
+			var backgroundColor:Number = viewStack.getStyle( "backgroundColor" );
+			if( isNaN( backgroundColor ) ) backgroundColor = 0xFFFFFF;
+			
+			var numChildren:int = viewStack.numChildren;
+			for( var i:int = 0; i < numChildren; i++ )
+			{
+				TileUtil.redrawBitmapDataTiles( BitmapData( bitmapDatum[ i ] ), _bitmapDataTiles[ i ] as Array, _tileWidth, _tileHeight, transparent, backgroundColor );
+			}
+		}
         override public function onTweenUpdate( value:Object ):void
 		{
 			super.onTweenUpdate( value );

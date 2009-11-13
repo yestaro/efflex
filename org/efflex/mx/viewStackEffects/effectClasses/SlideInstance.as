@@ -40,6 +40,8 @@ package org.efflex.mx.viewStackEffects.effectClasses
 		private var _distance				: Number;
 		private var _offset					: Number;
 		
+		private var _direction				: String;
+		
 		
 		public function SlideInstance( target:UIComponent )
 		{
@@ -73,7 +75,25 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			
 			_offset = 0;
 			
-        	switch( direction )
+			switch( direction )
+			{
+				case Slide.HORIZONTAL :
+				{
+					_direction = ( selectedIndexTo > selectedIndexFrom ) ? Slide.LEFT : Slide.RIGHT;
+					break;
+				}
+				case Slide.VERTICAL :
+				{
+					_direction = ( selectedIndexTo > selectedIndexFrom ) ? Slide.DOWN : Slide.UP;
+					break;
+				}
+				default :
+				{
+					_direction = direction;
+				}
+			}
+			
+        	switch( _direction )
 			{
 				case Slide.DOWN :
 				{
@@ -123,7 +143,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			
 			var position:Number = Number( value );
 			
-			switch( direction )
+			switch( _direction )
 			{
 				case Slide.DOWN :
 				{
