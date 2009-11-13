@@ -21,9 +21,6 @@ package org.efflex.mx.pairViewStackEffects.effectClasses
 		private var _hideMovieClipCore				: MovieClipCore;
 		private var _showMovieClipCore				: MovieClipCore;
 		
-		private var _hidding					: Bitmap;
-		private var _showing					: Bitmap;
-		
 		public function MovieClipMaskInstance( target:UIComponent )
 		{
 			super( target );
@@ -32,7 +29,6 @@ package org.efflex.mx.pairViewStackEffects.effectClasses
 		override protected function playPairViewStackEffect():void
         {
         	super.playPairViewStackEffect();
-        	
         
         	_hideMovieClipCore = new MovieClipCore( hideSource, hideFrameFrom, hideFrameTo, duration );
         	_showMovieClipCore = new MovieClipCore( showSource, showFrameFrom, showFrameTo, duration );
@@ -46,22 +42,6 @@ package org.efflex.mx.pairViewStackEffects.effectClasses
 			_hidding.mask = _hideMovieClipCore.movieClip;
 			_showing.mask = _showMovieClipCore.movieClip;
 			
-        	switch( bringToFront )
-			{
-				case PairViewStackTweenEffect.NEXT_CHILD :
-				{
-					display.addChild( _hidding );
-					display.addChild( _showing );
-					break;
-				}
-				case PairViewStackTweenEffect.PREV_CHILD :
-				{
-					display.addChild( _showing );
-					display.addChild( _hidding );
-					break;
-				}
-			}
-	
 			display.addChild( _hideMovieClipCore.movieClip );
 			display.addChild( _showMovieClipCore.movieClip );
         }

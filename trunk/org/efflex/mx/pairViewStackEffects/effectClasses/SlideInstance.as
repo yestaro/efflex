@@ -14,8 +14,7 @@ package org.efflex.mx.pairViewStackEffects.effectClasses
 		public var fromDirection 				: String;
 		public var toDirection 					: String;
 		
-		private var _hidding					: Bitmap;
-		private var _showing					: Bitmap;
+		
 		
 		public function SlideInstance( target:UIComponent )
 		{
@@ -28,46 +27,6 @@ package org.efflex.mx.pairViewStackEffects.effectClasses
         	
 			_hidding = new Bitmap( snapShot );
 			_showing = new Bitmap( BitmapData( bitmapDatum[ selectedIndexTo ] ) );
-			
-			switch( toDirection )
-			{
-				case Slide.DOWN :
-				{
-					_showing.y = -contentHeight;
-					break;
-				}
-				case Slide.UP :
-				{
-					_showing.y = contentHeight;
-					break;
-				}
-				case Slide.LEFT :
-				{
-					_showing.x = contentWidth;
-					break;
-				}
-				case Slide.RIGHT :
-				{
-					_showing.x = -contentWidth;
-					break;
-				}
-			}
-			
-			switch( bringToFront )
-			{
-				case PairViewStackTweenEffect.NEXT_CHILD :
-				{
-					display.addChild( _hidding );
-					display.addChild( _showing );
-					break;
-				}
-				case PairViewStackTweenEffect.PREV_CHILD :
-				{
-					display.addChild( _showing );
-					display.addChild( _hidding );
-					break;
-				}
-			}
         }
         
         override protected function onPairTweenUpdate( hideValue:Number, showValue:Number ):void
