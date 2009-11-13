@@ -8,10 +8,7 @@ package org.efflex.mx.viewStackEffects
 	public class MoveResizeToFromDisplayObject extends ViewStackTweenEffect
 	{
 		
-		private static var AFFECTED_PROPERTIES	: Array = [ "alpha" ];
-		
-		public static const PREV_CHILD			: String = "prevChild";
-		public static const NEXT_CHILD			: String = "nextChild";
+		private static var AFFECTED_PROPERTIES	: Array = [ "x", "y", "scaleX", "scaleY" ];
 		
 		[Inspectable(category="General", type="Function")]
 		public var displayObjectFunction					: Function;

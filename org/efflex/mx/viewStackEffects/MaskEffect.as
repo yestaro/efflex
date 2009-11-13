@@ -3,7 +3,7 @@ package org.efflex.mx.viewStackEffects
 	import mx.core.UIComponent;
 	import mx.effects.IEffectInstance;
 	
-	import org.efflex.mx.viewStackEffects.effectClasses.MaskInstance;
+	import org.efflex.mx.viewStackEffects.effectClasses.MaskEffectInstance;
 
 	public class MaskEffect extends ViewStackTweenEffect
 	{
@@ -32,7 +32,7 @@ package org.efflex.mx.viewStackEffects
 		{
 			super( target );
 			
-			instanceClass = MaskInstance;
+			instanceClass = MaskEffectInstance;
 		}
 		
 		override public function getAffectedProperties():Array
@@ -44,7 +44,7 @@ package org.efflex.mx.viewStackEffects
 		{
 			super.initInstance( instance );
 	
-			var effectInstance:MaskInstance = MaskInstance( instance );
+			var effectInstance:MaskEffectInstance = MaskEffectInstance( instance );
 			effectInstance.effectTarget = effectTarget;
 			effectInstance.actions = actions;
 			effectInstance.maskX = maskX;
