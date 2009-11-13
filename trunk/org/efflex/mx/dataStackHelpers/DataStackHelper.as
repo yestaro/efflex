@@ -20,7 +20,7 @@ package org.efflex.mx.dataStackHelpers
 {
 	import mx.core.EdgeMetrics;
 	
-	import ws.tink.flex.containers.DataStack;
+	import ws.tink.mx.containers.DataStack;
 
 	public class DataStackHelper implements IDataStackEffectHelper
 	{
