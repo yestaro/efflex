@@ -55,6 +55,9 @@ package org.efflex.mx.viewStackEffects
 		[Inspectable(category="General", type="Number", defaultValue="0")]
 		public var modalTransparencyDuration 	: Number = 0;
 		
+		[Inspectable(category="General", type="Boolean", enumeration="false,true", defaultValue="false")]
+		public var updateBitmaps				: Boolean = false;
+		
 		
 		
 		public function ViewStackTweenEffect( target:UIComponent = null )
@@ -78,6 +81,7 @@ package org.efflex.mx.viewStackEffects
 			effectInstance.modalTransparency = modalTransparency;
 			effectInstance.modalTransparencyBlur = modalTransparencyBlur;
 			effectInstance.modalTransparencyDuration = modalTransparencyDuration;
+			effectInstance.updateBitmaps = updateBitmaps;
 		}
 		
 	}

@@ -18,7 +18,7 @@ package org.efflex.mx.viewStackEffects
 		[Inspectable(category="General", type="Number", defaultValue="50")]
 		public var tileDurationPercent	: Number = 50;
 		
-		[Inspectable(category="General", type="String", enumeration="random,topRightToBottomLeft,topLeftToBottomRight,bottomRightToTopLeft,bottomLeftToTopRight", defaultValue="random")]
+		[Inspectable(category="General", type="String", enumeration="random,topRightToBottomLeft,topLeftToBottomRight,bottomRightToTopLeft,bottomLeftToTopRight,leftToRight,rightToLeft,topToBottom,bottomToTop", defaultValue="random")]
 		public var order	: String = TileCore.RANDOM;
 		
 		public function TileTweenEffect( target:UIComponent=null )

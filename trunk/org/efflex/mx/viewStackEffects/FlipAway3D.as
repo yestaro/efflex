@@ -18,69 +18,59 @@ SOFTWARE.
 
 package org.efflex.mx.viewStackEffects
 {
-	
 	import mx.core.UIComponent;
 	import mx.effects.IEffectInstance;
 	
-	import org.efflex.mx.viewStackEffects.effectClasses.SlideInstance;
-	
+	import org.efflex.mx.viewStackEffects.effectClasses.FlipAway3DInstance;
+	import org.efflex.mx.viewStackEffects.effectClasses.FlipPapervision3DInstance;
 
-
-	public class Slide extends ViewStackTweenEffect
+	public class FlipAway3D extends Away3DEffect
 	{
 		
-		private static var AFFECTED_PROPERTIES	: Array = [ "x", "y" ];
+		private static var AFFECTED_PROPERTIES	: Array = [ "rotationY", "rotationX" ];
 		
-		public static const HORIZONTAL			: String = "horizontal";
-		public static const VERTICAL			: String = "vertical"; 
-		
-		public static const DOWN				: String = "down";
-		public static const UP					: String = "up"; 
-		public static const LEFT				: String = "left"; 
+		public static const LEFT				: String = "left";
 		public static const RIGHT				: String = "right"; 
+		public static const UP					: String = "up"; 
+		public static const DOWN				: String = "down";
 		
-		[Inspectable(category="General", type="String", enumeration="down,up,left,right,horizontal,vertical", defaultValue="down")]
-		public var direction 					: String = Slide.DOWN;
+		public static const HORIZONTAL			: String = "horizontal"; 
+		public static const VERTICAL			: String = "vertical";
 		
-		public static const IN					: String = "in";
-		public static const OUT					: String = "out"; 
-		public static const TOGETHER			: String = "together"; 
+		[Inspectable(category="General", enumeration="left,right,up,down,horizontal,vertical", defaultValue="left")]
+		public var direction 					: String = FlipPapervision3D.LEFT;
 		
-		[Inspectable(category="General", type="String", enumeration="in,out,together", defaultValue="together")]
-		public var slideType 					: String = Slide.TOGETHER;
+		[Inspectable(category="General", type="Boolean", enumeration="true,false", defaultValue="true")]
+		public var scaleDurationByChange		: Boolean = true;
 		
-		//--------------------------------------------------------------------------
-		//
-		//  Constructor
-		//
-		//--------------------------------------------------------------------------
-	
-		/**
-		 *  Constructor.
-		 *
-		 *  @param target The Object to animate with this effect.
-		 */
-		public function Slide( target:UIComponent = null )
-		{
-			super( target );
+		[Inspectable(category="General", type="Number", defaultValue="2")]
+		public var numSegmentsWidth				: uint = 2;
+		
+		[Inspectable(category="General", type="Number", defaultValue="2")]
+		public var numSegmentsHeight			: uint = 2;
 
-			instanceClass = SlideInstance;
+
+		public function FlipAway3D(target:UIComponent=null)
+		{
+			super(target);
+
+			instanceClass = FlipAway3DInstance;
 		}
-	
-	
+		
 		override public function getAffectedProperties():Array
 		{
 			return AFFECTED_PROPERTIES;
 		}
-	
-	
+		
 		override protected function initInstance( instance:IEffectInstance ):void
 		{
 			super.initInstance( instance );
 	
-			var effectInstance:SlideInstance = SlideInstance( instance );
+			var effectInstance:FlipAway3DInstance = FlipAway3DInstance( instance );
 			effectInstance.direction = direction;
-			effectInstance.slideType = slideType;
+			effectInstance.scaleDurationByChange = scaleDurationByChange;
+			effectInstance.numSegmentsWidth = numSegmentsWidth;
+			effectInstance.numSegmentsHeight = numSegmentsHeight;
 		}
 	}
 }
