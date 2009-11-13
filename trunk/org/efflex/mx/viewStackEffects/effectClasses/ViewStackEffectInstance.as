@@ -71,7 +71,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 		public function ViewStackEffectInstance( target:UIComponent )
 		{
 			super( target );
-			
+			trace( "ViewStackEffectInstance" );
 			if( target.parent is ViewStack )
 			{
 				_viewStack = ViewStack( target.parent );
