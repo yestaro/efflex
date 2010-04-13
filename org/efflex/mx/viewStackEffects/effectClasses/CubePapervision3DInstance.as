@@ -18,9 +18,13 @@ SOFTWARE.
 
 package org.efflex.mx.viewStackEffects.effectClasses
 {
+	import flash.display.BitmapData;
+	import flash.geom.Matrix;
+	
 	import mx.core.UIComponent;
 	
 	import org.efflex.mx.viewStackEffects.CubePapervision3D;
+	import org.papervision3d.materials.BitmapMaterial;
 	import org.papervision3d.materials.utils.MaterialsList;
 	import org.papervision3d.objects.primitives.Cube;
 	
@@ -57,6 +61,8 @@ package org.efflex.mx.viewStackEffects.effectClasses
 		private var _zStart					: Number;
 		
 		private var _faceIndices				: FaceIndices;
+		
+		private var _reversedBitmaps		: Array;
 		
 		
 		public function CubePapervision3DInstance(target:UIComponent)
@@ -113,6 +119,15 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			_faceIndices = new FaceIndices();
 			_rotationStart = 0;
 			var depth:Number;
+			var dir:int;
+			
+			var front:BitmapMaterial;
+			var bottom:BitmapMaterial;
+			
+			var targetBitmapData:BitmapData;
+			var reversedBitmapData:BitmapData;
+			
+			_reversedBitmaps = new Array();
 			
 			switch( direction )
 			{
@@ -121,9 +136,16 @@ package org.efflex.mx.viewStackEffects.effectClasses
 					if( wasInterrupted )
 					{
 						_faceIndices.back = data.interruptedSelectedIndexFrom;
-						_faceIndices.top = selectedIndexTo;
-						_faceIndices.front = data.interruptedSelectedIndexTo;
+						_faceIndices.top = data.interruptedSelectedIndexTo;
+						_faceIndices.front = selectedIndexTo;
 						_rotationStart = data.interruptedRotationX;
+						
+						targetBitmapData = bitmapDatum[ _faceIndices.front ] as BitmapData;
+						reversedBitmapData = new BitmapData( targetBitmapData.width, targetBitmapData.height, false, 0xFF0000 ) 
+						reversedBitmapData.draw( targetBitmapData, new Matrix( -1, 0, 0, -1, targetBitmapData.width, targetBitmapData.height ) );
+						_reversedBitmaps.push( reversedBitmapData );
+						
+						front = new BitmapMaterial( reversedBitmapData );
 					}
 					else
 					{
@@ -131,6 +153,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 						_faceIndices.top = selectedIndexTo;
 					}
 					depth = contentHeight;
+					dir = 1;
 					break;
 				}
 				case CubePapervision3D.UP :
@@ -138,16 +161,32 @@ package org.efflex.mx.viewStackEffects.effectClasses
 					if( wasInterrupted )
 					{
 						_faceIndices.back = data.interruptedSelectedIndexFrom
-						_faceIndices.bottom = selectedIndexTo;
-						_faceIndices.front = data.interruptedSelectedIndexTo;
+						_faceIndices.bottom = data.interruptedSelectedIndexTo;
+						_faceIndices.front = selectedIndexTo;
 						_rotationStart = data.interruptedRotationX;
+						
+						targetBitmapData = bitmapDatum[ _faceIndices.front ] as BitmapData;
+						reversedBitmapData = new BitmapData( targetBitmapData.width, targetBitmapData.height, false, 0xFF0000 ) 
+						reversedBitmapData.draw( targetBitmapData, new Matrix( -1, 0, 0, -1, targetBitmapData.width, targetBitmapData.height ) );
+						_reversedBitmaps.push( reversedBitmapData );
+						
+						front = new BitmapMaterial( reversedBitmapData );
 					}
 					else
 					{
 						_faceIndices.back = selectedIndexFrom;
 						_faceIndices.bottom = selectedIndexTo;
 					}
+					
+					targetBitmapData = bitmapDatum[ _faceIndices.bottom ] as BitmapData;
+					reversedBitmapData = new BitmapData( targetBitmapData.width, targetBitmapData.height, false, 0xFF0000 ) 
+					reversedBitmapData.draw( targetBitmapData, new Matrix( -1, 0, 0, -1, targetBitmapData.width, targetBitmapData.height ) );
+					_reversedBitmaps.push( reversedBitmapData );
+					
+					bottom = new BitmapMaterial( reversedBitmapData );
+
 					depth = contentHeight;
+					dir = -1;
 					break;
 				}
 				case CubePapervision3D.LEFT :
@@ -158,6 +197,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 						_faceIndices.right = data.interruptedSelectedIndexTo;
 						_faceIndices.front = selectedIndexTo;
 						_rotationStart = data.interruptedRotationY;
+						front = getBitmapMaterialAt( _faceIndices.front );
 					}
 					else
 					{
@@ -165,6 +205,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 						_faceIndices.right = selectedIndexTo;
 					}
 					depth = contentWidth;
+					dir = 1;
 					break;
 				}
 				case CubePapervision3D.RIGHT :
@@ -174,6 +215,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 						_faceIndices.back = data.interruptedSelectedIndexFrom;
 						_faceIndices.left = data.interruptedSelectedIndexTo;
 						_faceIndices.front = selectedIndexTo;
+						front = getBitmapMaterialAt( _faceIndices.front );
 						_rotationStart = data.interruptedRotationY;
 					}
 					else
@@ -182,6 +224,7 @@ package org.efflex.mx.viewStackEffects.effectClasses
 						_faceIndices.left = selectedIndexTo;
 					}
 					depth = contentWidth;
+					dir = -1;
 					break;
 				}
 			}
@@ -196,13 +239,13 @@ package org.efflex.mx.viewStackEffects.effectClasses
 			}
 			else
 			{
-				_rotationDiff = ( _rotationStart == 0 ) ? 90 : 180 - _rotationStart;
+				_rotationDiff = ( _rotationStart == 0 ) ? 90 * dir : ( 180 * dir ) - _rotationStart;
 			}
 			
 			_zStart = depth / 2;
 			_zDifference = ( viewStack.clipContent ) ? ( Math.sqrt( ( depth * depth ) * 2 ) - depth ) / 2 : 0;
 			
-			var matrialList:MaterialsList = new MaterialsList( { front: getBitmapMaterialAt( _faceIndices.front ), back: getBitmapMaterialAt( _faceIndices.back ), left: getBitmapMaterialAt( _faceIndices.left ), right: getBitmapMaterialAt( _faceIndices.right ), top: getBitmapMaterialAt( _faceIndices.top ), bottom: getBitmapMaterialAt( _faceIndices.bottom ) } );
+			var matrialList:MaterialsList = new MaterialsList( { front: front, back: getBitmapMaterialAt( _faceIndices.back ), left: getBitmapMaterialAt( _faceIndices.left ), right: getBitmapMaterialAt( _faceIndices.right ), top: getBitmapMaterialAt( _faceIndices.top ), bottom: bottom } );
 			_cube = new Cube( matrialList, contentWidth, depth, contentHeight, segmentsS, segmentsT, segmentsH );
 			_cube.name = "cube";
 			_cube.z = _zStart;
@@ -240,6 +283,16 @@ package org.efflex.mx.viewStackEffects.effectClasses
 //					_cube.z = _zStart + ( _zDifference * Math.sin( MathUtil.degreesToRadians( _cube.rotationY * 2 ) ) );
 					break;
 				}
+			}
+		}
+		
+		override protected function destroyBitmapDatum():void
+		{
+			super.destroyBitmapDatum();
+			
+			for each( var bitmapData:BitmapData in _reversedBitmaps )
+			{
+				bitmapData.dispose();
 			}
 		}
 		
