@@ -25,7 +25,8 @@ package org.efflex.spark.viewStackEffects.supportClasses
 	
 	import org.efflex.spark.viewStackEffects.CoverFlow;
 	
-	import spark.effects.SimpleMotionPath;
+	import spark.effects.animation.MotionPath;
+	import spark.effects.animation.SimpleMotionPath;
 
 	public class CoverFlowInstance extends ViewStackAnimate3DInstance
 	{
@@ -86,7 +87,7 @@ package org.efflex.spark.viewStackEffects.supportClasses
         	
     		var targetDuration:Number = ( scaleDurationByChange ) ? duration * ( distance / change ) : duration;
     		
-    		motionPaths =  [ new SimpleMotionPath( null, 0, 1, targetDuration ) ];
+    		motionPaths =  new <MotionPath>[ new SimpleMotionPath( null, 0, 1, targetDuration ) ];
         }
         
 		override protected function setValue( property:String, value:Object ):void

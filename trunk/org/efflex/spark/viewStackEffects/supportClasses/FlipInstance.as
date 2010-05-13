@@ -24,10 +24,10 @@ package org.efflex.spark.viewStackEffects.supportClasses
 	import mx.core.UIComponent;
 	
 	import org.efflex.spark.viewStackEffects.Flip;
+	import org.efflex.utils.MathUtil;
 	
-	import spark.effects.SimpleMotionPath;
-	
-	import ws.tink.utils.MathUtil;
+	import spark.effects.animation.MotionPath;
+	import spark.effects.animation.SimpleMotionPath;
 
 	public class FlipInstance extends ViewStackAnimate3DInstance
 	{
@@ -158,7 +158,7 @@ package org.efflex.spark.viewStackEffects.supportClasses
         	
         	
     		var targetDuration:Number = ( scaleDurationByChange ) ? duration * ( Math.abs( valueTo - valueFrom ) / 180 ) : duration;
-    		motionPaths =  [ new SimpleMotionPath( property, valueFrom, valueTo, targetDuration ) ];
+    		motionPaths =  Vector.<MotionPath>( [ new SimpleMotionPath( property, valueFrom, valueTo, targetDuration ) ] );
         }
         
 		override protected function setValue( property:String, value:Object ):void
@@ -167,11 +167,32 @@ package org.efflex.spark.viewStackEffects.supportClasses
 			
 			_container[ property ] = v;
 			
-			if( _container.scaleX == 1 && Math.abs( v ) > 90 )
+			if( _displayedIndex != selectedIndexTo && Math.abs( v ) > 90 )
 			{
 				_displayedIndex = selectedIndexTo;
-				_container.scaleX = -1;
+//				_container.scaleX = -1;
 				_bitmap.bitmapData = getBitmapDataAtIndex( selectedIndexTo );
+				
+				switch( direction )
+				{
+					case Flip.VERTICAL :
+					case Flip.UP :
+					case Flip.DOWN :
+					{
+						_bitmap.scaleY = -1;
+						_bitmap.y += _bitmap.height;
+						break;
+					}
+					case Flip.HORIZONTAL :
+					case Flip.LEFT :
+					case Flip.RIGHT :
+					{
+						_bitmap.scaleX = -1;
+						_bitmap.x += _bitmap.width;
+						break;
+					}
+				}
+				
 			}
 			
 			_container.z = _zOffset * Math.sin( MathUtil.degreesToRadians( Math.abs( v ) ) );
