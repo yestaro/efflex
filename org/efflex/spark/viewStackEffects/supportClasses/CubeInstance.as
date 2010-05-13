@@ -28,7 +28,8 @@ package org.efflex.spark.viewStackEffects.supportClasses
 	
 	import org.efflex.spark.viewStackEffects.Cube;
 	
-	import spark.effects.SimpleMotionPath;
+	import spark.effects.animation.MotionPath;
+	import spark.effects.animation.SimpleMotionPath;
 
 	public class CubeInstance extends ViewStackAnimate3DInstance
 	{
@@ -254,7 +255,7 @@ package org.efflex.spark.viewStackEffects.supportClasses
 			display.addChild( _cubeContainer );
 			_cubeView.sortFaces();
     		duration = ( scaleDurationByChange ) ? duration * ( Math.abs( valueTo - valueFrom ) / 90 ) : duration;
-    		motionPaths =  [ new SimpleMotionPath( _property, valueFrom, valueTo, duration ) ];
+    		motionPaths = Vector.<MotionPath>( [ new SimpleMotionPath( _property, valueFrom, valueTo, duration ) ] );
     		
     		_cubeContainer.addEventListener( Event.ENTER_FRAME, onEnterFrame, false, 0, true );
         }
