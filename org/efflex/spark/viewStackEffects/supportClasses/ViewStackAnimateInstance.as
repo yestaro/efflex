@@ -174,6 +174,8 @@ package org.efflex.spark.viewStackEffects.supportClasses
 	    	
 			if( !_contentPane ) createContainers();
 			
+			if( hideTarget && wasInterrupted ) applyEraseBlendMode( true );
+			
 			_indicesRequired = new Array();
 
 			_contentPane.selectedIndexTo = _viewStack.selectedIndex;
@@ -239,7 +241,7 @@ package org.efflex.spark.viewStackEffects.supportClasses
 					takeSnapShot();
 					removeChildren();
 					_contentPane.hideDisplay.visible = true;
-					if( hideTarget ) applyEraseBlendMode( true );
+					if( hideTarget && !wasInterrupted ) applyEraseBlendMode( true );
 					viewStack.callLater( finishRepeat );
 					break;
 				}
@@ -249,7 +251,7 @@ package org.efflex.spark.viewStackEffects.supportClasses
 					createBitmapDatum();
 					playViewStackEffect();
 					_contentPane.hideDisplay.visible = false;
-					if( hideTarget ) applyEraseBlendMode( true );
+					if( hideTarget && !wasInterrupted ) applyEraseBlendMode( true );
 					super.play();
 					break;
 				}
@@ -285,7 +287,7 @@ package org.efflex.spark.viewStackEffects.supportClasses
 				if( !bitmapData )
 				{
 					child = UIComponent( viewStack.getChildAt( _indicesRequired[ i ] ) );
-					bitmapData = new BitmapData( child.width, child.height, transparent, bitmapColor );				
+					bitmapData = new BitmapData( child.width, child.height, false, bitmapColor );				
 					bitmapData.draw( child );
 					bitmapDatum[ _indicesRequired[ i ] ] = bitmapData;
 				}
@@ -406,8 +408,8 @@ package org.efflex.spark.viewStackEffects.supportClasses
 		override public function finishEffect():void
 		{
 			super.finishEffect();
-
-			if( _prevBlendMode ) applyEraseBlendMode( false );
+			
+			applyEraseBlendMode( false );
 			
 			if( _wasInterrupted ) return;
 			
@@ -527,21 +529,27 @@ package org.efflex.spark.viewStackEffects.supportClasses
 
 	
 	
-import flash.events.EventDispatcher;
-import mx.events.FlexEvent;
-import mx.core.Container;
-import mx.containers.ViewStack;
-import flash.geom.Rectangle;
-import mx.core.mx_internal;
-import mx.core.IInvalidating;
-import flash.events.Event;
-import flash.utils.Timer;
-import flash.events.TimerEvent;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.DisplayObject;
 import flash.display.MovieClip;
 import flash.display.Sprite;
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.TimerEvent;
+import flash.geom.Rectangle;
+import flash.utils.Timer;
+
+import mx.containers.ViewStack;
+import mx.core.Container;
+import mx.core.IInvalidating;
 import mx.core.UIComponent;
-import flash.display.BitmapData;
-import flash.display.Bitmap;
+import mx.core.mx_internal;
+import mx.events.FlexEvent;
+
+import spark.components.NavigatorContent;
+import spark.components.SkinnableContainer;
+import spark.components.supportClasses.SkinnableContainerBase;
 
 use namespace mx_internal;
 class ContainerResizeAndCreator extends EventDispatcher
@@ -566,11 +574,11 @@ class ContainerResizeAndCreator extends EventDispatcher
 	{
 		_complete = true;
 		
-		var container:Container;
+		var container:UIComponent;
 		var numContainers:int;
 		for( var i:int = 0; i < numContainers; i++ )
 		{
-			container = Container( _creatingContainers[ i ] );
+			container = UIComponent( _creatingContainers[ i ] );
 			container.removeEventListener( FlexEvent.CREATION_COMPLETE, onContainerCreationComplete, false );
 		}
 	}
@@ -591,7 +599,9 @@ class ContainerResizeAndCreator extends EventDispatcher
 		var newWidth:Number;
 		var newHeight:Number;
 
-		var child:Container;
+		var child:UIComponent;
+		var sparkChild:SkinnableContainer;
+		var mxChild:Container;
 			
 		var index:int;
 		
@@ -601,8 +611,17 @@ class ContainerResizeAndCreator extends EventDispatcher
 			index = Number( indicesRequired[ i ] );
 			if( index >= 0 && index < numChildren )
 			{
-				child = viewStack.getChildAt( index ) as Container;
-				if( ( child.mx_internal::numChildrenCreated == -1 && child.numChildren != 0 ) || !child.initialized ) _creationCount++;
+				child = viewStack.getChildAt( index ) as UIComponent;
+				if( child is SkinnableContainer )
+				{
+					sparkChild = child as SkinnableContainer;
+					if( ( !sparkChild.deferredContentCreated && sparkChild.numChildren != 0 ) || !sparkChild.initialized ) _creationCount++;
+				}
+				else
+				{
+					mxChild = child as Container;
+					if( ( mxChild.mx_internal::numChildrenCreated == -1 && mxChild.numChildren != 0 ) || !mxChild.initialized ) _creationCount++;
+				}
 			}
 		}
 		
@@ -612,14 +631,31 @@ class ContainerResizeAndCreator extends EventDispatcher
 			index = Number( indicesRequired[ i ] );
 			if( index >= 0 && index < numChildren && !isNaN( index ) )
 			{
-				child = viewStack.getChildAt( index ) as Container;
-				
-				if( ( child.mx_internal::numChildrenCreated == -1 && child.numChildren != 0 ) || !child.initialized )
+				child = viewStack.getChildAt( index ) as UIComponent;
+				if( child is SkinnableContainerBase )
 				{
-					_creatingContainers.push( child );
-					child.addEventListener( FlexEvent.CREATION_COMPLETE, onContainerCreationComplete, false, 0, true );
-					child.createComponentsFromDescriptors( true );
+					sparkChild = child as SkinnableContainer;
+					if( ( !sparkChild.deferredContentCreated && sparkChild.numChildren != 0 ) || !sparkChild.initialized )
+					{
+						_creatingContainers.push( sparkChild );
+						sparkChild.addEventListener( FlexEvent.CREATION_COMPLETE, onContainerCreationComplete, false, 0, true );
+						sparkChild.createDeferredContent();
+					}
 				}
+				else
+				{
+					mxChild = child as Container;
+					if( ( mxChild.mx_internal::numChildrenCreated == -1 && mxChild.numChildren != 0 ) || !mxChild.initialized )
+					{
+						_creatingContainers.push( mxChild );
+						mxChild.addEventListener( FlexEvent.CREATION_COMPLETE, onContainerCreationComplete, false, 0, true );
+						mxChild.createComponentsFromDescriptors( true );
+					}
+				}
+				
+//				child = viewStack.getChildAt( index ) as Container;
+				
+				
 
 				newWidth = bounds.width;
 				newHeight = bounds.height;
@@ -658,7 +694,7 @@ class ContainerResizeAndCreator extends EventDispatcher
 	
 	private function onContainerCreationComplete( event:FlexEvent ):void
 	{
-		var container:Container = Container( event.currentTarget );
+		var container:UIComponent = UIComponent( event.currentTarget );
 		container.removeEventListener( FlexEvent.CREATION_COMPLETE, onContainerCreationComplete, false );
 		_creationCompleteCount++;
 		
