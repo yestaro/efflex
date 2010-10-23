@@ -37,7 +37,7 @@ package org.efflex.spark.viewStackEffects
 //		public static const VERTICAL			: String = "vertical";
 		
 		[Inspectable(category="General", enumeration="left,right,up,down", defaultValue="left")]
-		public var direction 					: String = Flip.LEFT;
+		public var direction 					: String = Cube.LEFT;
 		
 		[Inspectable(category="General", enumeration="true,false", defaultValue="true")]
 		public var scaleDurationByChange		: Boolean = true;

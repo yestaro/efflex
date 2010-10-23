@@ -287,7 +287,7 @@ package org.efflex.spark.viewStackEffects.supportClasses
 				if( !bitmapData )
 				{
 					child = UIComponent( viewStack.getChildAt( _indicesRequired[ i ] ) );
-					bitmapData = new BitmapData( child.width, child.height, false, bitmapColor );				
+					bitmapData = new BitmapData( child.width, child.height, transparent, bitmapColor );				
 					bitmapData.draw( child );
 					bitmapDatum[ _indicesRequired[ i ] ] = bitmapData;
 				}
